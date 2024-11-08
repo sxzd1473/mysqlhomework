@@ -3,7 +3,7 @@ from extension import db
 class Player(db.Model):
     __tablename__ = 'player'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    player_name = db.Column(db.String(10), unique=True, nullable=False)
+    player_name = db.Column(db.String(20), unique=False, nullable=False)
     player_rank = db.Column(db.String(10), unique=False, nullable=True)
     player_kda = db.Column(db.Float, unique=False, nullable=True)
 

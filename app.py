@@ -78,6 +78,7 @@ player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
                  view_func=player_view, methods=['GET',])
 app.add_url_rule('/players/<int:player_id>',  view_func=player_view, methods=['GET', 'PUT', 'DELETE'])
+app.add_url_rule('/players/<string:player_name>',  view_func=player_view, methods=['GET', 'PUT', 'DELETE'])
 
 if __name__ == '__main__':
     create()
