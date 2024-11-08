@@ -1,6 +1,5 @@
 from extension import db
 
-
 class Player(db.Model):
     __tablename__ = 'player'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -10,6 +9,7 @@ class Player(db.Model):
 
     @staticmethod
     def init_db():
+        db.create_all()
         rets = [
             (1, 'ace', '白银', 2.3),
             (2, 'mkk', '黄金', 3),

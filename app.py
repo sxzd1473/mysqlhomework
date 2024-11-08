@@ -6,21 +6,15 @@ from extension import db, cors
 from models import Player
 
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///players.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 cors.init_app(app)
 
-
-
-
-
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
-
 
 @app.cli.command()
 def create():
@@ -31,7 +25,7 @@ def create():
 class PlayerApi(MethodView):
     def get(self, player_id):
         if not player_id:
-            players: [Player] = Player.query.all()
+            players:[Player] = Player.query.all()
             results = [
                 {
                     'id': player.id,
@@ -57,12 +51,6 @@ class PlayerApi(MethodView):
                     'player_kda': player.player_kda,
 
                 }
-
-
-
-
-
-
         }
 
     def post(self):
@@ -86,17 +74,11 @@ class PlayerApi(MethodView):
             'message': '数据修改成功'
         }
 
-
-
-
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
                  view_func=player_view, methods=['GET',])
 app.add_url_rule('/players/<int:player_id>',  view_func=player_view, methods=['GET', 'PUT', 'DELETE'])
 
-
-
-
-
 if __name__ == '__main__':
+    create()
     app.run(debug=True)
