@@ -29,7 +29,7 @@ def create():
     Player.init_db()
 
 class PlayerApi(MethodView):
-    def get(self, player_id):
+    def get(self, player_id): #查询
         if not player_id:
             players: [Player] = Player.query.all()
             results = [
@@ -65,7 +65,7 @@ class PlayerApi(MethodView):
 
         }
 
-    def post(self):
+    def post(self):   #新增数据
         form = request.json
         player = Player()
         player.player_name = form.get('player_name')
@@ -75,7 +75,7 @@ class PlayerApi(MethodView):
         db.session.commit()
 
 
-    def put(self, player_id):
+    def modify(self, player_id): #修改数据
         player: Player = Player.query.get(player_id)
         player.player_name = request.json.get('player_name')
         player.player_rank = request.json.get('player_rank')
@@ -85,6 +85,14 @@ class PlayerApi(MethodView):
             'status': 'success',
             'message': '数据修改成功'
         }
+    def delete(self, player_id):  #删除数据
+        player: Player = Player.query.get(player_id)
+        db.session.delete(player)
+        db.session.commit()
+        return {
+            'status': 'success',
+            'message': '数据删除成功'
+        }
 
 
 
@@ -92,7 +100,7 @@ class PlayerApi(MethodView):
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
                  view_func=player_view, methods=['GET',])
-app.add_url_rule('/players/<int:player_id>',  view_func=player_view, methods=['GET', 'PUT', 'DELETE'])
+app.add_url_rule('/players/<int:player_id>',  view_func=player_view, methods=['GET', 'MODIFY', 'DELETE'])
 
 
 
