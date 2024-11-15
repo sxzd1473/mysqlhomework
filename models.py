@@ -37,8 +37,8 @@ class Match(db.Model):
     def init_db():
         db.create_all()
         rets = [
-            (1, 'ranked', datetime(2021, 8, 1, 10, 0, 0), 180, 'win','map1'),
-            (2, 'normal', datetime(2021, 8, 1, 11, 0, 0), 120, 'lose','map2'),
+            (1, 'ranked', datetime(2021, 8, 1, 10, 0, 0), 180, 'win', 'map1'),
+            (2, 'normal', datetime(2021, 8, 1, 11, 0, 0), 120, 'lose', 'map2'),
         ]
         for ret in rets:
             match = Match()
@@ -66,8 +66,8 @@ class MatchRecord(db.Model):#来自比赛服务器
     def init_db():
         db.create_all()
         rets = [
-            (1, 2, 162, 'weapon1', '123,456', 1, 1),
-            (2, 1, 168, 'weapon2', '123,456', 1, 2),
+            (1, 1, 1, 2, 100, 'knife', '100,100'),
+            (2, 1, 2, 1, 200, 'grenade', '200,200'),
         ]
         for ret in rets:
             record = MatchRecord()
@@ -87,15 +87,15 @@ class PlayerRecord(db.Model):
     playerId = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
     matchId = db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
     killCount = db.Column(db.Integer, nullable=False)
-    deathCount = db.Column(db.Integer, nullable=False)
     kd = db.Column(db.Float, nullable=False)
+    deathCount = db.Column(db.Integer, nullable=False)
     rankpoints = db.Column(db.Integer, nullable=False)
     @staticmethod
     def init_db():
         db.create_all()
         rets = [
             (1, 1, 1, 10, 5, 2.5, 1000),
-            (2, 2, 1, 8, 3, 2.0, 800),
+            (2, 2, 1, 8, 4, 2.0, 800),
         ]
         for ret in rets:
             record = PlayerRecord()

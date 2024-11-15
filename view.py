@@ -3,7 +3,7 @@ from urllib import request
 from flask.views import MethodView
 
 from extension import db
-from models import Player, Match
+from models import Player, Match, MatchRecord, PlayerRecord
 
 
 class PlayerApi(MethodView):
@@ -145,3 +145,91 @@ class MatchApi(MethodView):
             'status': 'success',
             'message': '数据删除成功'
         }
+class MatchRecordApi(MethodView):
+    def get(self, match_id):
+        if not match_id:
+            match: [Match] = MatchRecord.query.all()
+            results = [
+                {
+                    'id': record.id,
+                    'killerId': record.killerid,
+                    'victimId': record.victimid,
+                    'killTime': record.killtime,
+                    'meansOFDeath': record.meansofdeath,
+                    'coordinates': record.cordinates
+                } for record in match
+            ]
+            return {
+                'status': 'success',
+                'message': '所有的比赛记录',
+                'results': results
+            }
+        match: [Match] = MatchRecord.query.filter(match_id=match_id).all()
+        results = [
+            {
+                'killerId': record.killerid,
+                'victimId': record.victimid,
+                'killTime': record.killtime,
+                'meansOFDeath': record.meansofdeath,
+                'coordinates': record.cordinates
+                }for record in match
+            ]
+        return {
+            'status': 'success',
+            'message': '数据查询成功',
+            'results': results
+        }
+
+    def post(self):
+        form = request.json
+        record = MatchRecord()
+        record.recordId = form.get('id')
+        record.matchId = form.get('match_id')
+        record.killerId = form.get('killerId')
+        record.victimId = form.get('victimId')
+        record.killTime = form.get('killTime')
+        record.meansOfDeath = form.get('meansOFDeath')
+        record.coordinates = form.get('coordinates')
+        db.session.add(record)
+        db.session.commit()
+        return {
+            'status': 'success',
+            'message': '数据添加成功'
+        }
+
+    def delete(self,  record_id, match_id):
+        if not record_id and not match_id:
+            return {
+                'status': 'fail',
+                'message': '请指定要删除的记录ID'
+            }
+        elif not record_id: #删除比赛记录
+            record: [Match] = MatchRecord.query.get(match_id)
+            db.session.delete(record)
+            db.session.commit()
+            return {
+                'status': 'success',
+                'message': '数据删除成功'
+                }
+        else: #删除单条记录
+            record: [Match] = MatchRecord.query.get(record_id)
+            db.session.delete(record)
+            db.session.commit()
+            return {
+                'status': 'success',
+                'message': '数据删除成功'
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
