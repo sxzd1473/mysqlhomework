@@ -15,7 +15,7 @@ cors.init_app(app)
 def hello_world():  # put application's code here
     return 'Hello World!'
 
-@app.before_first_request
+
 def create():
     db.drop_all()
     db.create_all()
