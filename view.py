@@ -2,7 +2,6 @@ from urllib import request
 
 from flask.views import MethodView
 
-
 from extension import db
 from models import Player, Match, MatchRecord, PlayerRecord
 
@@ -121,9 +120,17 @@ class MatchApi(MethodView):
         match.match_map = form.get('match_map')
         db.session.add(match)
         db.session.commit()
+    def put(self, match_id):
+        match: Match = Match.query.get(match_id)
+        match.match_mode = request.json.get('match_mode')
+        match.match_time = request.json.get('match_time')
+        match.match_result = request.json.get('match_result')
+        match.match_duration = request.json.get('match_duration')
+        match.match_map = request.json.get('match_map')
+        db.session.commit()
         return {
             'status': 'success',
-            'message': '数据添加成功'
+            'message': '数据修改成功'
         }
     def delete(self, match_id):
         if not match_id:
@@ -144,13 +151,13 @@ class MatchRecordApi(MethodView):
             match: [MatchRecord] = MatchRecord.query.all()
             results = [
                 {
-                    'id': record.id,
-                    'matchId' : record.matchid,
-                    'killerId': record.killerid,
-                    'victimId': record.victimid,
-                    'killTime': record.killtime,
-                    'meansOFDeath': record.meansofdeath,
-                    'coordinates': record.cordinates
+                    'id': record.recordId,
+                    'matchId': record.matchId,
+                    'killerId': record.killerId,
+                    'victimId': record.victimId,
+                    'killTime': record.killTime,
+                    'meansOFDeath': record.meansOFDeath,
+                    'coordinates': record.coordinates
                 } for record in match
             ]
             return {
@@ -161,11 +168,12 @@ class MatchRecordApi(MethodView):
         match: [MatchRecord] = MatchRecord.query.filter(match_id=match_id).all()
         results = [
             {
-                'killerId': record.killerid,
-                'victimId': record.victimid,
-                'killTime': record.killtime,
-                'meansOFDeath': record.meansofdeath,
-                'coordinates': record.cordinates
+                'matchId': record.matchId,
+                'killerId': record.killerId,
+                'victimId': record.victimId,
+                'killTime': record.killTime,
+                'meansOFDeath': record.meansOFDeath,
+                'coordinates': record.coordinates
                 }for record in match
             ]
         return {
@@ -177,7 +185,7 @@ class MatchRecordApi(MethodView):
     def post(self):
         form = request.json
         record = MatchRecord()
-        record.recordId = form.get('id')
+        record.recordId = form.get('recordId')
         record.matchId = form.get('match_id')
         record.killerId = form.get('killerId')
         record.victimId = form.get('victimId')
@@ -262,4 +270,17 @@ class PlayerRecordApi(MethodView):
                 'status': 'success',
                 'message': '数据删除成功'
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
