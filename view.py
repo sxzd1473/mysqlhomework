@@ -1,7 +1,7 @@
 from urllib import request
 
 from flask.views import MethodView
-from sqlalchemy.dialects.mysql import match
+
 
 from extension import db
 from models import Player, Match, MatchRecord, PlayerRecord
@@ -145,6 +145,7 @@ class MatchRecordApi(MethodView):
             results = [
                 {
                     'id': record.id,
+                    'matchId' : record.matchid,
                     'killerId': record.killerid,
                     'victimId': record.victimid,
                     'killTime': record.killtime,
