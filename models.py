@@ -29,7 +29,7 @@ class Match(db.Model):
     __tablename__ = 'match'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     match_mode = db.Column(db.String(20), unique=False, nullable=False)
-    match_time = db.Column(db.DateTime, unique=False, nullable=True)
+    match_time = db.Column(db.DateTime, unique=False, nullable=True )
     match_duration = db.Column(db.Integer, unique=False, nullable=True)
     match_result = db.Column(db.String(20), unique=False, nullable=True)
     match_map = db.Column(db.String(20), unique=False, nullable=True)
