@@ -34,7 +34,7 @@ app.add_url_rule('/playerRecords/<int:player_id>', view_func=playerRecord_view, 
 match_view = MatchApi.as_view('match_api')
 app.add_url_rule('/matches/', defaults={'match_id': None},
                  view_func=match_view, methods=['GET', ])
-app.add_url_rule('/matches/<int:match_id>', view_func=match_view, methods=['GET', 'POST', 'DELETE'])
+app.add_url_rule('/matches/<int:match_id>', view_func=match_view, methods=['GET',])
 
 #matchRecord
 matchRecord_view = MatchRecordApi.as_view('matchRecord_api')
