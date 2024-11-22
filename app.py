@@ -20,7 +20,8 @@ player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
                  view_func=player_view, methods=['GET', ])
 app.add_url_rule('/players/add/', view_func=player_view, methods=['POST', ],)
-app.add_url_rule('/players/<int:player_id>', view_func=player_view, methods=['GET', 'PUT', 'DELETE'])
+app.add_url_rule('/players/edit/<int:player_id>/', view_func=player_view, methods=['PUT', ],)
+app.add_url_rule('/players/delete/<int:player_id>/', view_func=player_view, methods=[ 'DELETE',])
 
 #playerRecord
 playerRecord_view = PlayerApi.as_view('playerRecord_api')
