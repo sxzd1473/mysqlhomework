@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏数据管理系统</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/star.css" rel="stylesheet">
+    <style>
+
+        body {
+            background-color: black; /* 设置背景颜色为黑色 */
+            color: white; /* 设置文字颜色为白色，以便在黑色背景上可见 */
+        }
+
+        .map-container {
+            height: 60vh; /* 设置地图容器的高度为视口高度的一半 */
+            background-image: url('../static/earth-1917.gif'); /* 占位符图像，请替换为实际地图的URL */
+            background-size: 700px; /* 使图像覆盖整个容器 */
+            background-position: left 61%; /* 使图像居中 */
+            background-repeat: no-repeat; /* 不重复图像 */
+        }
+
+        .footer-text {
+            margin-top: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-dark text-white">
+    <a class="navbar-brand">游戏数据管理系统</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">首页 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">链接</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">禁用</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    下拉菜单
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">动作</a>
+                    <a class="dropdown-item" href="#">另一个动作</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">其他内容</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- 主内容 -->
+<div class="container-fluid">
+    <div class="map-container"></div>
+</div>
+
+<!-- 底部文字与按钮 -->
+<div class="container text-center footer-text">
+    <p>目前在线人数：{{ in_online_count }}</p>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="/Players_view" class="btn btn-primary">玩家数据</a>
+        <a href="/Matched_view" class="btn btn-secondary">比赛数据</a>
+        <a href="/MatchRecords_view" class="btn btn-success">比赛记录</a>
+        <a href="/PlayersRecords_view" class="btn btn-danger">玩家比赛记录</a>
+    </div>
+</div>
+<div id="stars"></div>
+<div id="stars2"></div>
+<div id="stars3"></div>
+<!-- 引入 Bootstrap JS 和 Popper.js -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

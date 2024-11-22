@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Database Management</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row no-gutters">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h5 class="mb-4">Navigation</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="http://localhost:5000/">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myModal">Add Player</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Delete Player</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Update Player</a>
+                </li>
+            </ul>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h2>玩家列表</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>玩家昵称</th>
+                    <th>玩家段位</th>
+                    <th>玩家KDA</th>
+                    <th>选项</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Placeholder data rows -->
+                {% for player in data %}
+                    <tr>
+                        <td>{{ player.id }}</td>
+                        <td>{{ player.player_name }}</td>
+                        <td>{{ player.player_rank }}</td>
+                        <td>{{ player.player_kda }}</td>
+                        <td>
+                            <button href='http://localhost:5000//players//{{ player.id }}'
+                                    class="btn btn-warning btn-sm">Edit
+                            </button>
+                            <button href='http://localhost:5000//players//{{ player.id }} '
+                                    class="btn btn-danger btn-sm">Delete
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">模态框标题</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- 模态框内容 -->
+                    <div class="modal-body">
+                        模态框内容..
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

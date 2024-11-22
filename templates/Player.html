@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Database Management</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row no-gutters">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <h5 class="mb-4">Navigation</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="http://localhost:5000/">主页</a>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addPlayerModal">Add Player
+                    </button>
+                </li>
+            </ul>
+            <div class="modal fade" id="addPlayerModal" tabindex="-1" aria-labelledby="addPlayerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPlayerModalLabel">Add Player</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="playerForm" action="/sumbit" method="POST">
+                                <div class="form-group">
+                                    <label for="player_name">Player Name</label>
+                                    <input type="text" class="form-control" id="player_name" name="player_name"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="player_rank">Player Rank</label>
+                                    <input type="text" class="form-control" id="player_rank" name="player_rank"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="player_kda">Player KDA</label>
+                                    <input type="number" class="form-control" id="player_kda" name="player_kda"
+                                           required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="submitPlayerForm">Add Player</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <h2>玩家列表</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>玩家昵称</th>
+                    <th>玩家段位</th>
+                    <th>玩家KDA</th>
+                    <th>选项</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Placeholder data rows -->
+                {% for player in data %}
+                    <tr>
+                        <td>{{ player.id }}</td>
+                        <td>{{ player.player_name }}</td>
+                        <td>{{ player.player_rank }}</td>
+                        <td>{{ player.player_kda }}</td>
+                        <td>
+                            <button data-toggle="modal"
+                                    data-target="#editPlayerModal"
+                                    data-id="{{ player.id }}"
+                                    data-name="{{ player.player_name }}"
+                                    data-rank="{{ player.player_rank }}"
+                                    data-kda="{{ player.player_kda }}"
+                                    class="btn btn-warning btn-sm">Edit
+                            </button>
+                            <button onclick="deletePlayer({{ player.id }})" ,
+                                    class="btn btn-danger btn-sm">Delete
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+            <div class="modal fade" id="editPlayerModal" tabindex="-1" aria-labelledby="editPlayerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editPlayerModalLabel">Edit Player</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editPlayerForm" action="/players/update" method="POST">
+                                <input type="hidden" id="edit_player_id" name="player_id">
+                                <div class="form-group">
+                                    <label for="edit_player_name">Player Name</label>
+                                    <input type="text" class="form-control" id="edit_player_name" name="player_name"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_player_rank">Player Rank</label>
+                                    <input type="text" class="form-control" id="edit_player_rank" name="player_rank"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_player_kda">Player KDA</label>
+                                    <input type="number" class="form-control" id="edit_player_kda" name="player_kda"
+                                           required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="submitEditPlayerForm">Save changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<script src="../static/js/player.js"></script>
+<!-- Bootstrap JS and dependencies CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

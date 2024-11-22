@@ -1,9 +1,10 @@
-from urllib import request
+from flask import request
 
 from flask.views import MethodView
 
 from extension import db
 from models import Player, Match, MatchRecord, PlayerRecord
+
 
 
 class PlayerApi(MethodView):
@@ -49,7 +50,6 @@ class PlayerApi(MethodView):
         'status': 'success',
         'message': '数据添加成功'
         }
-
 
     def put(self, player_id):
         player: Player = Player.query.get(player_id)
