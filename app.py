@@ -1,5 +1,4 @@
-from flask import Flask,render_template,jsonify,request,redirect,url_for
-import requests
+from flask import Flask, render_template, jsonify, requests
 from extension import db, cors
 from models import Player, Match
 from view import PlayerApi, MatchApi, MatchRecordApi
@@ -15,35 +14,40 @@ cors.init_app(app)
 @app.route('/')
 def hello_world():  # put application's code here
     return render_template("main_page.html")
-#player
+#player 玩家端
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
                  view_func=player_view, methods=['GET', ])
 app.add_url_rule('/players/add/', view_func=player_view, methods=['POST', ],)
 app.add_url_rule('/players/edit/<int:player_id>/', view_func=player_view, methods=['PUT', ],)
-app.add_url_rule('/players/delete/<int:player_id>/', view_func=player_view, methods=[ 'DELETE',])
+app.add_url_rule('/players/delete/<int:player_id>/', view_func=player_view, methods=['DELETE',])
 
-#playerRecord
+#playerRecord 玩家记录端
 playerRecord_view = PlayerApi.as_view('playerRecord_api')
 app.add_url_rule('/playerRecords/', defaults={'playerRecord_id': None},
                  view_func=playerRecord_view, methods=['GET', ]
                  )
-app.add_url_rule('/playerRecords/<int:player_id>', view_func=playerRecord_view, methods=['GET', 'POST', 'DELETE'])
+app.add_url_rule('/playerRecords/add/', view_func=playerRecord_view, methods=['POST'])
+app.add_url_rule('/playerRecords/delete/<int:player_id>/', view_func=playerRecord_view, methods=['DELETE'])
 
-#match
+#match 服务器端
 match_view = MatchApi.as_view('match_api')
 app.add_url_rule('/matches/', defaults={'match_id': None},
                  view_func=match_view, methods=['GET', ])
-app.add_url_rule('/matches/<int:match_id>', view_func=match_view, methods=['GET', 'POST', 'DELETE'])
+app.add_url_rule('/matches/<int:match_id>/', view_func=match_view, methods=['PUT'])
+app.add_url_rule('/matches/add/', view_func=match_view, methods=['POST'])
+app.add_url_rule('/matches/delete/<int:match_id>/', view_func=match_view, methods=['DELETE'])
 
-#matchRecord
+
+#matchRecord 服务器记录端
 matchRecord_view = MatchRecordApi.as_view('matchRecord_api')
 app.add_url_rule('/matchRecords/', defaults={'matchRecord_id': None},
                  view_func=matchRecord_view, methods=['GET', ]
                  )
-app.add_url_rule('/matchRecords/<int:match_id>', view_func=matchRecord_view, methods=['GET', 'POST', 'DELETE'])
-
-
+app.add_url_rule('/matchRecords/<int:match_id>/', view_func=matchRecord_view, methods=['GET'])
+app.add_url_rule('/matchRecords/add/<int:match_id>/', view_func=matchRecord_view, methods=['POST'])
+app.add_url_rule('/matchRecords/delete/<int:match_id>/', view_func=matchRecord_view, methods=['DELETE'])
+app.add_url_rule('/matchRecords/edit/<int:match_id>/', view_func=matchRecord_view, methods=['PUT'])
 #路由
 
 
