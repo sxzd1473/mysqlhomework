@@ -24,7 +24,7 @@ app.add_url_rule('/players/edit/<int:player_id>/', view_func=player_view, method
 app.add_url_rule('/players/delete/<int:player_id>/', view_func=player_view, methods=[ 'DELETE',])
 
 #playerRecord
-playerRecord_view = PlayerApi.as_view('playerRecord_api')
+playerRecord_view = PlayerRecordApi.as_view('playerRecord_api')
 app.add_url_rule('/playerRecords/', defaults={'playerRecord_id': None},
                  view_func=playerRecord_view, methods=['GET', ]
                  )
@@ -35,9 +35,13 @@ app.add_url_rule('/playerRecords/delete/<int:player_id>/', view_func=playerRecor
 match_view = MatchApi.as_view('match_api')
 app.add_url_rule('/matches/', defaults={'match_id': None},
                  view_func=match_view, methods=['GET', ])
-app.add_url_rule('/matches/<int:match_id>/', view_func=match_view, methods=['PUT'])
+app.add_url_rule('/matches/edit/<int:match_id>/', view_func=match_view, methods=['PUT'])
 app.add_url_rule('/matches/add/', view_func=match_view, methods=['POST'])
+app.add_url_rule('/matches/delete/',
+                 defaults={'match_id': None},
+                 view_func=match_view, methods=['DELETE'])
 app.add_url_rule('/matches/delete/<int:match_id>/', view_func=match_view, methods=['DELETE'])
+
 
 #matchRecord
 matchRecord_view = MatchRecordApi.as_view('matchRecord_api')

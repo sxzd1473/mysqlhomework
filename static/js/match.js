@@ -31,57 +31,23 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(() => {
-                document.getElementById('addmatchesModal').style.display = 'none';
+                document.getElementById('addMatchModal').style.display = 'none';
                 location.reload();
             })
             .catch(error => console.error('Error:', error));
     });
 
 
-    //删除过期比赛
-
-    document.getElementById("deleteMatchBtn").addEventListener("click", function () {
-        // 假设比赛的开始时间存放在一个 class 为 match-time 的元素中，并且有一个 data-id 属性用于存储比赛的 ID
-        const matches = document.querySelectorAll('.match-time');
-        const currentTime = new Date();
-        const threeMonthsAgo = new Date();
-        threeMonthsAgo.setMonth(currentTime.getMonth() - 3);
-
-        matches.forEach(match => {
-            const matchStartTime = new Date(match.textContent); // 假设比赛时间是文本内容
-            const matchId = match.dataset.id; // 假设存储 id 的数据属性为 data-id
-            if (confirm('确定要删除所有过期比赛吗？')) {
-                if (matchStartTime < threeMonthsAgo) {
-                    fetch('/matchs/delete/' + matchId + '/', {
-                        url: '/matchs/delete/' + matchId + '/',
-                        method: 'DELETE',
-                        success: function (result) {
-                            // 在页面上刷新数据
-                            location.reload();
-                        },
-                        error: function (err) {
-                            alert('删除失败: ' + err.responseText);
-                            location.reload();
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(() => {
-                            location.reload();
-                        })
-                        .catch(error => console.error('Error:', error));
-                }
-            }
-        });
-    });
 
     // 点击添加对局按钮弹出模态框并填充当前时间
     var edbuttons = document.querySelectorAll('button[id^="editMatchBtn_"]');
+    var EditingMatchId = null;
 
     edbuttons.forEach(function (button) {
         button.addEventListener('click', function () {
 
             // 获取数据属性
-            const matchId = this.getAttribute('data-id'); // 如果需要，可以替换为具体数据
+            EditingMatchId = this.getAttribute('data-id'); // 如果需要，可以替换为具体数据
             const matchMode = this.getAttribute('data-mode');
             const matchTime = this.getAttribute('data-time');
             const matchDuration = this.getAttribute('data-duration');
@@ -89,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const matchMap = this.getAttribute('data-map');
 
 // 将数据填充到编辑表单
-            document.getElementById('edit_match_id').value = matchId;              // 假设你有该 ID 字段
             document.getElementById('edit_match_mode').value = matchMode;        // 填充比赛模式
             document.getElementById('edit_match_time').value = matchTime;        // 填充比赛时间
             document.getElementById('edit_match_duration').value = matchDuration; // 填充比赛时长
@@ -104,8 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.forEach((value, key) => {
             data[key] = value;
         });
-        var EditingMatchId = data.match_id;
-        fetch('/matches/edit/' + EditingMatcId + '/', {
+        fetch('/matches/edit/' + EditingMatchId + '/', {
             url: '/matches/edit/' + EditingMatchId + '/',
             method: 'PUT',
             headers: {
@@ -114,38 +78,67 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(data)
         }).then(response => response.json())
             .then(() => {
-                document.getElementById('editmatchModal').style.display = 'none';
+                document.getElementById('editMatchModal').style.display = 'none';
                 location.reload();
-            })
-            .catch(error => console.error('Error:', error));
+            });
+        EditingMatchId = null;
 
     });
+    //计数
+    document.getElementById("allMatchCountBtn").addEventListener("click", function allMatchCount() {
+        var edbuttons = document.querySelectorAll('button[id^="editMatchBtn_"]');
+        document.getElementById('allMatchCountOutput').innerHTML = "总计存储了" + edbuttons.length+'个对局';
+    })
 
-    // 删除玩家的函数
-    function deletematch(matchId) {
-        if (confirm('确定要删除这个对局吗？')) {
-            console.log('删除对局：' + matchId);
-            fetch('/matchs/delete/' + matchId + '/', {
-                url: '/matchs/delete/' + matchId + '/',
-                method: 'DELETE',
-                success: function (result) {
-                    // 在页面上刷新数据
-                    location.reload();
-                },
-                error: function (err) {
-                    alert('删除失败: ' + err.responseText);
-                    location.reload();
-                }
-            })
-                .then(response => response.json())
-                .then(() => {
-                    location.reload();
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    }
+
 });
 
+// 删除对局的函数
+function deleteMatch(matchId) {
+    if (confirm('确定要删除这个对局吗？')) {
+        console.log('删除对局：' + matchId);
+        fetch('/matches/delete/' + matchId + '/', {
+            url: '/matches/delete/' + matchId + '/',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function () {
+                // 在页面上刷新数据
+                location.reload();
+            },
+            error: function (err) {
+                alert('删除失败: ' + err.responseText);
+                location.reload();
+            }
+        })
+            .then(response => response.json())
+            .then(() => {
+                location.reload();
+            });
+    }
+}
 
+function deleteExpiredMatch() {
+    if (confirm('确定要删除所有过期对局吗？')) {
+
+        fetch('/matches/delete/', {
+            url: '/matches/delete/',
+            method: 'DELETE',
+            success: function () {
+                // 在页面上刷新数据
+                location.reload();
+            },
+            error: function (err) {
+                alert('删除失败: ' + err.responseText);
+                location.reload();
+            }
+        })
+            .then(response => response.json())
+            .then(() => {
+                location.reload();
+            });
+    }
+}
 
 

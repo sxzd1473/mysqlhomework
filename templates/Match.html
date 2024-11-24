@@ -29,18 +29,24 @@
                     <a class="nav-link active" href="http://localhost:5000/">主页</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myModal">总比赛数</a>
+                    <button id="allMatchCountBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#allMatchCountModal"
+                    >总比赛数
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <button id ="addMatchBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                    <button id="addMatchBtn" type="button" class="btn btn-primary" data-toggle="modal"
                             data-target="#addMatchModal">添加比赛
                     </button>
                 </li>
                 <li class="nav-item">
-                    <button id ='deleteMatchBtn' type="button" class="btn btn-primary" data-toggle="modal">删除比赛
+                    <button id='deleteMatchBtn' type="button" class="btn btn-primary" data-toggle="modal"
+                            onclick="deleteExpiredMatch()"
+                    >删除比赛
                     </button>
                 </li>
             </ul>
+            <!-- Add Match Modal -->
             <div class="modal fade" id="addMatchModal" tabindex="-1" aria-labelledby="addMatchModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
@@ -56,8 +62,8 @@
                                 <div class="form-group">
                                     <label for="match_mode">比赛模式</label>
                                     <select class="form-control" id="match_mode" name="match_mode" required>
-                                        <option value="normal">Normal</option>
-                                        <option value="ranked">Ranked</option>
+                                        <option value="休闲">休闲</option>
+                                        <option value="排位">排位</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -73,10 +79,10 @@
                                 <div class="form-group">
                                     <label for="match_result">比赛结果</label>
                                     <select class="form-control" id="match_result" name="match_result" required>
-                                        <option value="win">胜利</option>
-                                        <option value="lose">失败</option>
-                                        <option value="draw">平局</option>
-                                        <option value="ongoing">正在进行</option>
+                                        <option value="胜利">胜利</option>
+                                        <option value="失败">失败</option>
+                                        <option value="平局">平局</option>
+                                        <option value="正在进行">正在进行</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -89,6 +95,26 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" id="submitMatchForm">添加比赛</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- All Match Count Modal -->
+            <div class="modal fade" id="allMatchCountModal" tabindex="-1" aria-labelledby="allMatchCountModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allMatchCountModalLabel">总比赛数</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body justify-content-center" id="allMatchCountOutput">
+                            出问题了
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                         </div>
                     </div>
                 </div>
@@ -110,7 +136,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Placeholder data rows -->
                 {% for match in data %}
                     <tr>
                         <td>{{ match.id }}</td>
@@ -131,13 +156,17 @@
                                     data-map="{{ match.match_map }}"
                                     class="btn btn-warning btn-sm">编辑
                             </button>
+                            <button class="btn btn-danger btn-sm" id="deleteMatchBtn_{{ loop.index }}"
+                                    onclick="deleteMatch({{ match.id }})">
+                                删除
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             <!-- Edit Match Modal -->
-        <div class="modal fade" id="editMatchModal" tabindex="-1" aria-labelledby="editMatchModalLabel"
+            <div class="modal fade" id="editMatchModal" tabindex="-1" aria-labelledby="editMatchModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -152,8 +181,8 @@
                                 <div class="form-group">
                                     <label for="edit_match_mode">比赛模式</label>
                                     <select class="form-control" id="edit_match_mode" name="match_mode" required>
-                                        <option value="normal">Normal</option>
-                                        <option value="ranked">Ranked</option>
+                                        <option value="休闲">休闲</option>
+                                        <option value="排位">排位</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -163,16 +192,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_match_duration">比赛时长(ms)</label>
-                                    <input type="number" class="form-control" id="edit_match_duration" name="match_duration"
+                                    <input type="number" class="form-control" id="edit_match_duration"
+                                           name="match_duration"
                                            required>
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_match_result">比赛结果</label>
                                     <select class="form-control" id="edit_match_result" name="match_result" required>
-                                        <option value="win">胜利</option>
-                                        <option value="lose">失败</option>
-                                        <option value="draw">平局</option>
-                                        <option value="ongoing">正在进行</option>
+                                        <option value="胜利">胜利</option>
+                                        <option value="失败">失败</option>
+                                        <option value="平局">平局</option>
+                                        <option value="正在进行">正在进行</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -183,41 +213,18 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="submitEditMatchForm">添加比赛</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitEditMatchForm">修改比赛</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Modal -->
-        <div class="modal" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
 
-                    <!-- 模态框头部 -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">模态框标题</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- 模态框内容 -->
-                    <div class="modal-body">
-                        模态框内容..
-                    </div>
-
-                    <!-- 模态框底部 -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-<script src = "../static/js/match.js"></script>
+<script src="../static/js/match.js"></script>
 <!-- Bootstrap JS and dependencies CDN -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

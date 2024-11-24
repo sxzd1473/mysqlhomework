@@ -80,7 +80,7 @@ class PlayerApi(MethodView):
 class MatchApi(MethodView):
     def get(self, match_id):
         if not match_id:
-            match:[Match] = Match.query.all()
+            matches:[Match] = Match.query.all()
             results = [
                 {
                     'id': match.id,
@@ -89,7 +89,7 @@ class MatchApi(MethodView):
                     'match_result': match.match_result,
                     'match_duration': match.match_duration,
                     'match_map': match.match_map
-                }for match in match
+                }for match in matches
             ]
             return {
                 'status': 'success',
@@ -138,10 +138,7 @@ class MatchApi(MethodView):
         }
     def delete(self, match_id):
         if not match_id:
-            return {
-                'status': 'fail',
-                'message': '请指定要删除的比赛ID'
-                }
+            self.deleteExpire()
         match: Match = Match.query.get(match_id)
         db.session.delete(match)
         db.session.commit()
@@ -149,6 +146,39 @@ class MatchApi(MethodView):
             'status': 'success',
             'message': '数据删除成功'
         }
+    def deleteExpire(self):
+        from datetime import datetime, timedelta
+        # 计算三个月前的日期
+        three_months_ago = datetime.now() - timedelta(days=90)
+
+        # 获取所有比赛记录
+        matches = Match.query.all()
+
+        # 记录需要删除的比赛
+        matches_to_delete = []
+
+        for match in matches:
+            date_object = datetime.strptime(match.match_time, "%Y-%m-%d %H:%M:%S")
+            match_time = date_object  # 假设 match_time 是一个 datetime 对象
+            if match_time < three_months_ago:
+                matches_to_delete.append(match)
+        if not matches_to_delete:
+            return {
+                'status': 'success',
+                'message': '没有过期比赛'
+            }
+        # 删除过期比赛
+        for match in matches_to_delete:
+            db.session.delete(match)
+
+        # 提交更改
+        db.session.commit()
+        return {
+        'status': 'success',
+        'message': '数据删除成功'
+        }
+
+
 class MatchRecordApi(MethodView):
     def get(self, match_id):
         if not match_id:
