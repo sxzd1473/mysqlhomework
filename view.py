@@ -120,6 +120,10 @@ class MatchApi(MethodView):
         match.match_map = form.get('match_map')
         db.session.add(match)
         db.session.commit()
+        return {
+            'status': 'success',
+            'message': '数据添加成功'
+        }
     def put(self, match_id):
         match: Match = Match.query.get(match_id)
         match.match_mode = request.json.get('match_mode')

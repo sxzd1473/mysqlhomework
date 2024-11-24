@@ -7,6 +7,7 @@
     <!-- 引入 Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/star.css" rel="stylesheet">
+    <script src="../static/js/main.js"></script>
     <style>
 
         body {
@@ -72,12 +73,12 @@
 
 <!-- 底部文字与按钮 -->
 <div class="container text-center footer-text">
-    <p>目前在线人数：{{ in_online_count }}</p>
+    <p id="online_num"></p>
     <div class="btn-group" role="group" aria-label="Basic example">
-        <a href="/Players_view" class="btn btn-primary">玩家数据</a>
-        <a href="/Matched_view" class="btn btn-secondary">比赛数据</a>
-        <a href="/MatchRecords_view" class="btn btn-success">比赛记录</a>
-        <a href="/PlayersRecords_view" class="btn btn-danger">玩家比赛记录</a>
+        <a href="/Players_view" class="btn btn-primary">|玩家数据|</a>
+        <a href="/Matches_view" class="btn btn-primary">|比赛数据|</a>
+        <a href="/MatchRecords_view" class="btn btn-primary">|比赛记录|</a>
+        <a href="/PlayerRecords_view" class="btn btn-primary">|玩家比赛记录|</a>
     </div>
 </div>
 <div id="stars"></div>

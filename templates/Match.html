@@ -31,7 +31,68 @@
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myModal">总比赛数</a>
                 </li>
+                <li class="nav-item">
+                    <button id ="addMatchBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addMatchModal">添加比赛
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button id ='deleteMatchBtn' type="button" class="btn btn-primary" data-toggle="modal">删除比赛
+                    </button>
+                </li>
             </ul>
+            <div class="modal fade" id="addMatchModal" tabindex="-1" aria-labelledby="addMatchModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addMatchModalLabel">Add Player</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="matchForm" action="/sumbit" method="POST">
+                                <div class="form-group">
+                                    <label for="match_mode">比赛模式</label>
+                                    <select class="form-control" id="match_mode" name="match_mode" required>
+                                        <option value="normal">Normal</option>
+                                        <option value="ranked">Ranked</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="match_time">比赛时间</label>
+                                    <input type="text" class="form-control" id="match_time" name="match_time"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="match_duration">比赛时长</label>
+                                    <input type="number" class="form-control" id="match_duration" name="match_duration"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="match_result">比赛结果</label>
+                                    <select class="form-control" id="match_result" name="match_result" required>
+                                        <option value="win">胜利</option>
+                                        <option value="lose">失败</option>
+                                        <option value="draw">平局</option>
+                                        <option value="ongoing">正在进行</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="match_map">比赛地图</label>
+                                    <input type="text" class="form-control" id="match_map" name="match_map"
+                                           required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="submitMatchForm">添加比赛</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Main Content -->
         <div class="col-md-10 main-content">
@@ -40,33 +101,94 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>玩家昵称</th>
-                    <th>玩家段位</th>
-                    <th>玩家KDA</th>
+                    <th>比赛模式</th>
+                    <th>比赛时间</th>
+                    <th>比赛时长</th>
+                    <th>比赛结果</th>
+                    <th>比赛地图</th>
                     <th>选项</th>
                 </tr>
                 </thead>
                 <tbody>
                 <!-- Placeholder data rows -->
-                {% for player in data %}
+                {% for match in data %}
                     <tr>
-                        <td>{{ player.id }}</td>
-                        <td>{{ player.player_name }}</td>
-                        <td>{{ player.player_rank }}</td>
-                        <td>{{ player.player_kda }}</td>
+                        <td>{{ match.id }}</td>
+                        <td>{{ match.match_mode }}</td>
+                        <td>{{ match.match_time }}</td>
+                        <td>{{ match.match_duration if match.match_duration else '正在进行。。。。' }}</td>
+                        <td>{{ match.match_result if match.match_result else '正在进行。。。。' }}</td>
+                        <td>{{ match.match_map }}</td>
                         <td>
-                            <button href='http://localhost:5000//players//{{ player.id }}'
-                                    class="btn btn-warning btn-sm">Edit
-                            </button>
-                            <button href='http://localhost:5000//players//{{ player.id }} '
-                                    class="btn btn-danger btn-sm">Delete
+                            <button id="editMatchBtn_{{ loop.index }}"
+                                    data-toggle="modal"
+                                    data-target="#editMatchModal"
+                                    data-id="{{ match.id }}"
+                                    data-mode="{{ match.match_mode }}"
+                                    data-time="{{ match.match_time if match.match_time else '' }}"
+                                    data-duration="{{ match.match_duration }}"
+                                    data-result="{{ match.match_result }}"
+                                    data-map="{{ match.match_map }}"
+                                    class="btn btn-warning btn-sm">编辑
                             </button>
                         </td>
                     </tr>
                 {% endfor %}
-                <!-- Add more rows as needed -->
                 </tbody>
             </table>
+            <!-- Edit Match Modal -->
+        <div class="modal fade" id="editMatchModal" tabindex="-1" aria-labelledby="editMatchModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editMatchModalLabel">edit Player</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editMatchForm" action="/sumbit" method="POST">
+                                <div class="form-group">
+                                    <label for="edit_match_mode">比赛模式</label>
+                                    <select class="form-control" id="edit_match_mode" name="match_mode" required>
+                                        <option value="normal">Normal</option>
+                                        <option value="ranked">Ranked</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_match_time">比赛时间</label>
+                                    <input type="text" class="form-control" id="edit_match_time" name="match_time"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_match_duration">比赛时长(ms)</label>
+                                    <input type="number" class="form-control" id="edit_match_duration" name="match_duration"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_match_result">比赛结果</label>
+                                    <select class="form-control" id="edit_match_result" name="match_result" required>
+                                        <option value="win">胜利</option>
+                                        <option value="lose">失败</option>
+                                        <option value="draw">平局</option>
+                                        <option value="ongoing">正在进行</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_match_map">比赛地图</label>
+                                    <input type="text" class="form-control" id="edit_match_map" name="match_map"
+                                           required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="submitEditMatchForm">添加比赛</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Modal -->
         <div class="modal" id="myModal">
@@ -95,6 +217,7 @@
     </div>
 </div>
 
+<script src = "../static/js/match.js"></script>
 <!-- Bootstrap JS and dependencies CDN -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

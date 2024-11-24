@@ -53,8 +53,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="player_rank">Player Rank</label>
-                                    <input type="text" class="form-control" id="player_rank" name="player_rank"
-                                           required>
+                                    <select class="form-control" id="player_rank" name="player_rank" required>
+                                        <option value="青铜">青铜</option>
+                                        <option value="白银">白银</option>
+                                        <option value="黄金">黄金</option>
+                                        <option value="铂金">铂金</option>
+                                        <option value="钻石">钻石</option>
+                                        <option value="大师">大师</option>
+                                        </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="player_kda">Player KDA</label>
@@ -122,17 +128,23 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="editPlayerForm" action="/players/edit" method="POST">
+                            <form id="editPlayerForm" action="/submit" method="POST">
                                 <input type="hidden" id="edit_player_id" name="player_id">
                                 <div class="form-group">
                                     <label for="edit_player_name">Player Name</label>
-                                    <input type="text" class="form-control" id="edit_player_name"  name="player_name" value = ''
+                                    <input type="text" class="form-control" id="edit_player_name"  name="player_name"
                                            required>
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_player_rank">Player Rank</label>
-                                    <input type="text" class="form-control" id="edit_player_rank" name="player_rank"
-                                           required>
+                                    <select class="form-control" id="player_rank" name="player_rank" required>
+                                        <option value="青铜">青铜</option>
+                                        <option value="白银">白银</option>
+                                        <option value="黄金">黄金</option>
+                                        <option value="铂金">铂金</option>
+                                        <option value="钻石">钻石</option>
+                                        <option value="大师">大师</option>
+                                        </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_player_kda">Player KDA</label>
