@@ -29,59 +29,149 @@
                     <a class="nav-link active" href="http://localhost:5000/">主页</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myModal">Add Player</a>
+                    <button id="allMatchCountBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#allMatchCountModal"
+                    >总比赛数
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Delete Player</a>
+                    <button id="addKillRecordBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addKillRecordModal">添加比赛
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Update Player</a>
+                    <button id='deleteMatchBtn' type="button" class="btn btn-primary" data-toggle="modal"
+                            onclick="deleteExpiredMatch()"
+                    >删除比赛
+                    </button>
                 </li>
             </ul>
+            <!-- Add Match Modal -->
+            <div class="modal fade" id="addKillRecordModal" tabindex="-1" aria-labelledby="addKillRecordModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addKillRecordModalLabel">添加击杀记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="killRecordForm" action="/submit" method="POST">
+                                <div class="form-group">
+                                    <label for="match_id">比赛ID</label>
+                                    <select class="form-control" id="match_id" name="match_id" required>
+
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="killer_id">击杀者ID</label>
+                                    <select class="form-control" id="killer_id" name="killer_id" required>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="victim_id">受害者ID</label>
+                                    <select class="form-control" id="victim_id" name="victim_id" required>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kill_time">击杀时间 (tick)</label>
+                                    <input type="number" class="form-control" id="kill_time" name="kill_time" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="means_of_death">死亡方式</label>
+                                    <select class="form-control" id="means_of_death" name="means_of_death" required>
+                                        <option value="knife">刀</option>
+                                        <option value="grenade">手雷</option>
+                                        <option value="gun1">枪1</option>
+                                        <option value="gun2">枪2</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="coordinates">坐标</label>
+                                    <input type="text" class="form-control" id="coordinates" name="coordinates"
+                                           required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitKillRecordForm">添加击杀记录
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Match Count Modal -->
+            <div class="modal fade" id="allMatchCountModal" tabindex="-1" aria-labelledby="allMatchCountModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allMatchCountModalLabel">总比赛数</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body justify-content-center" id="allMatchCountOutput">
+                            出问题了
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Main Content -->
         <div class="col-md-10 main-content">
-            <h2>比赛记录列表</h2>
+            <h2>比赛列表</h2>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>玩家昵称</th>
-                    <th>玩家段位</th>
-                    <th>玩家KDA</th>
+                    <th>击杀记录ID</th>
+                    <th>比赛ID</th>
+                    <th>击杀者ID</th>
+                    <th>受害者ID</th>
+                    <th>击杀时间</th>
+                    <th>死亡方式</th>
+                    <th>坐标</th>
                     <th>选项</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Placeholder data rows -->
-                {% for player in data %}
+                {% for record in data %}
                     <tr>
-                        <td>{{ player.id }}</td>
-                        <td>{{ player.player_name }}</td>
-                        <td>{{ player.player_rank }}</td>
-                        <td>{{ player.player_kda }}</td>
+                        <td>{{ record.id }}</td>
+                        <td>{{ record.matchId }}</td>
+                        <td>{{ record.killerId }}</td>
+                        <td>{{ record.victimId }}</td>
+                        <td>{{ record.killTime }}</td>
+                        <td>{{ record.meansOfDeath }}</td>
+                        <td>{{ record.coordinates }}</td>
                         <td>
-                            <button href='http://localhost:5000//players//{{ player.id }}'
-                                    class="btn btn-warning btn-sm">Edit
-                            </button>
-                            <button href='http://localhost:5000//players//{{ player.id }} '
-                                    class="btn btn-danger btn-sm">Delete
+                            <button class="btn btn-danger btn-sm" id="deleteKillRecordBtn_{{ loop.index }}"
+                                    onclick="deleteKillRecord({{ record.recordId }})">
+                                删除
                             </button>
                         </td>
                     </tr>
                 {% endfor %}
-                <!-- Add more rows as needed -->
                 </tbody>
             </table>
         </div>
 
-        </div>
     </div>
 </div>
+
 
 <!-- Bootstrap JS and dependencies CDN -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="../static/js/matchRecord.js"></script>
 </body>
 </html>

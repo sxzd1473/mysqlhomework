@@ -45,11 +45,11 @@ app.add_url_rule('/matches/delete/<int:match_id>/', view_func=match_view, method
 
 #matchRecord
 matchRecord_view = MatchRecordApi.as_view('matchRecord_api')
-app.add_url_rule('/matchRecords/', defaults={'matchRecord_id': None},
+app.add_url_rule('/matchRecords/', defaults={'match_id': None},
                  view_func=matchRecord_view, methods=['GET', ]
                  )
 app.add_url_rule('/matchRecords/<int:match_id>/', view_func=matchRecord_view, methods=['GET'])
-app.add_url_rule('/matchRecords/add/<int:match_id>/', view_func=matchRecord_view, methods=['POST'])
+app.add_url_rule('/matchRecords/add/', view_func=matchRecord_view, methods=['POST'])
 app.add_url_rule('/matchRecords/delete/<int:match_id>/', view_func=matchRecord_view, methods=['DELETE'])
 app.add_url_rule('/matchRecords/edit/<int:match_id>/', view_func=matchRecord_view, methods=['PUT'])
 #路由

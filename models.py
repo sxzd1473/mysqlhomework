@@ -52,7 +52,7 @@ class Match(db.Model):
         db.session.commit()
 
 
-class MatchRecord(db.Model):#来自比赛服务器
+class MatchRecord(db.Model):  #来自比赛服务器
     __tablename__ = 'match_record'
     recordId = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     matchId = db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
@@ -98,15 +98,15 @@ class PlayerRecord(db.Model):
             (2, 2, 1, 8, 4, 2.0, 800),
         ]
         for ret in rets:
-            record = PlayerRecord()
-            record.pmatchId = ret[0]
-            record.playerId = ret[1]
-            record.matchId = ret[2]
-            record.killCount = ret[3]
-            record.deathCount = ret[4]
-            record.kd = ret[5]
-            record.rankpoints = ret[6]
-            db.session.add(record)
+            precord = PlayerRecord()
+            precord.pmatchId = ret[0]
+            precord.playerId = ret[1]
+            precord.matchId = ret[2]
+            precord.killCount = ret[3]
+            precord.deathCount = ret[4]
+            precord.kd = ret[5]
+            precord.rankpoints = ret[6]
+            db.session.add(precord)
         db.session.commit()
 
 

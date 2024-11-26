@@ -190,7 +190,7 @@ class MatchRecordApi(MethodView):
                     'killerId': record.killerId,
                     'victimId': record.victimId,
                     'killTime': record.killTime,
-                    'meansOFDeath': record.meansOFDeath,
+                    'meansOfDeath': record.meansOfDeath,
                     'coordinates': record.coordinates
                 } for record in match
             ]
@@ -206,7 +206,7 @@ class MatchRecordApi(MethodView):
                 'killerId': record.killerId,
                 'victimId': record.victimId,
                 'killTime': record.killTime,
-                'meansOFDeath': record.meansOFDeath,
+                'meansOfDeath': record.meansOfDeath,
                 'coordinates': record.coordinates
                 }for record in match
             ]
@@ -221,10 +221,10 @@ class MatchRecordApi(MethodView):
         record = MatchRecord()
         record.recordId = form.get('recordId')
         record.matchId = form.get('match_id')
-        record.killerId = form.get('killerId')
-        record.victimId = form.get('victimId')
-        record.killTime = form.get('killTime')
-        record.meansOfDeath = form.get('meansOFDeath')
+        record.killerId = form.get('killer_id')
+        record.victimId = form.get('victim_id')
+        record.killTime = form.get('kill_time')
+        record.meansOfDeath = form.get('means_of_death')
         record.coordinates = form.get('coordinates')
         db.session.add(record)
         db.session.commit()
