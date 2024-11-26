@@ -122,8 +122,8 @@ function deleteMatch(matchId) {
 function deleteExpiredMatch() {
     if (confirm('确定要删除所有过期对局吗？')) {
 
-        fetch('/matches/delete/', {
-            url: '/matches/delete/',
+        fetch('/Matches_view/delete/', {
+            url: '/Matches_view/delete/',
             method: 'DELETE',
             success: function () {
                 // 在页面上刷新数据

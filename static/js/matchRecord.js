@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.forEach((value, key) => {
             data[key] = value;
         });
-        console.log(data);
         fetch('/matchRecords/add/', {
             method: 'POST',
             headers: {
@@ -21,60 +20,54 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error:', error));
     });
-
-
-});
-
-// 删除对局的函数
-function deleteKillRecord(matchId) {
-    if (confirm('确定要删除这个对局吗？')) {
-        console.log('删除对局：' + matchId);
-        fetch('/matches/delete/' + matchId + '/', {
-            url: '/matches/delete/' + matchId + '/',
+    document.getElementById('searchBtn').addEventListener('click', function () {
+        var matchId = document.getElementById('searchMatchId').value;
+        fetch('/matchRecords/' + matchId)
+            .then(response => response.json())
+            .then(data => {
+                if (data['results'].length == 0) {
+                    var tableBody = document.querySelector('tbody');
+                    tableBody.innerHTML = '<tr><td colspan="8">没有找到相关记录</td></tr>';
+                    return;
+                }
+                // 清空现有的表格数据
+                var tableBody = document.querySelector('tbody');
+                tableBody.innerHTML = '';
+                // 根据返回的数据填充表格
+                data['results'].forEach(record => {
+                    var row = `<tr>
+                            <td>${record.recordId}</td>
+                            <td>${record.matchId}</td>
+                            <td>${record.killerId}</td>
+                            <td>${record.victimId}</td>
+                            <td>${record.killTime}</td>
+                            <td>${record.meansOfDeath}</td>
+                            <td>${record.coordinates}</td>
+                            <td><button class="btn btn-danger btn-sm disabled">删除</button></td>
+                        </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+    })
+    document.getElementById('delKillRecordBtn').addEventListener('click', function () {
+        var matchId = document.getElementById('delMatchId').value;
+        fetch('/matchRecords/delete/' + matchId + '/', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            success: function () {
-                // 在页面上刷新数据
-                location.reload();
-            },
-            error: function (err) {
-                alert('删除失败: ' + err.responseText);
-                location.reload();
             }
-        })
-            .then(response => response.json())
+        }).then(response => response.json())
             .then(() => {
                 location.reload();
             });
-    }
-}
+    });
+    document.getElementById("allRecordCountBtn").addEventListener("click", function allRecordCount() {
+        var num_of_trs = document.querySelectorAll('tbody tr').length;
+        document.getElementById('allRecordCountOutput').innerHTML = "总计存储了" + num_of_trs+'条记录';
+    })
+});
 
-function deleteExpiredMatch() {
-    if (confirm('确定要删除所有过期对局吗？')) {
-
-        fetch('/matches/delete/', {
-            url: '/matches/delete/',
-            method: 'DELETE',
-            success: function () {
-                // 在页面上刷新数据
-                location.reload();
-            },
-            error: function (err) {
-                alert('删除失败: ' + err.responseText);
-                location.reload();
-            }
-        })
-            .then(response => response.json())
-            .then(() => {
-                location.reload();
-            });
-    }
-}
-
-
-// 使用 jQuery 发送 AJAX 请求
+// 外键
 $(document).ready(function () {
     // 查询比赛ID
     $.ajax({
@@ -117,4 +110,21 @@ $(document).ready(function () {
     });
 });
 
+
+function deleteByMatch(matchId) {
+    if (confirm('确定要删除这个对局吗？')) {
+        console.log('删除对局：' + matchId);
+        fetch('/matches/delete/' + matchId + '/', {
+            url: '/matches/delete/' + matchId + '/',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(() => {
+                location.reload();
+            });
+    }
+}
 

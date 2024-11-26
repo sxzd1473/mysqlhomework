@@ -185,7 +185,7 @@ class MatchRecordApi(MethodView):
             match: [MatchRecord] = MatchRecord.query.all()
             results = [
                 {
-                    'id': record.recordId,
+                    'recordId': record.recordId,
                     'matchId': record.matchId,
                     'killerId': record.killerId,
                     'victimId': record.victimId,
@@ -199,9 +199,10 @@ class MatchRecordApi(MethodView):
                 'message': '所有的比赛记录',
                 'results': results
             }
-        match: [MatchRecord] = MatchRecord.query.filter(match_id=match_id).all()
+        match: [MatchRecord] = MatchRecord.query.filter_by(matchId=match_id).all()
         results = [
             {
+                'recordId': record.recordId,
                 'matchId': record.matchId,
                 'killerId': record.killerId,
                 'victimId': record.victimId,
@@ -233,15 +234,16 @@ class MatchRecordApi(MethodView):
             'message': '数据添加成功'
         }
 
-    def delete(self,   match_id):
+    def delete(self,match_id):
         if not match_id:
             return {
                 'status': 'fail',
                 'message': '请指定要删除的比赛ID'
             }
         else: #删除比赛记录
-            record: [MatchRecord] = MatchRecord.query.filter_by(match_id = match_id).all()
-            db.session.delete(record)
+            records: [MatchRecord] = MatchRecord.query.filter_by(matchId = match_id).all()
+            for record in records:
+                db.session.delete(record)
             db.session.commit()
             return {
                 'status': 'success',
