@@ -12,7 +12,6 @@
             background-color: #f8f9fa;
             padding: 20px;
         }
-
         .main-content {
             padding: 20px;
         }
@@ -26,78 +25,157 @@
             <h5 class="mb-4">Navigation</h5>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="http://localhost:5000/">主页</a>
+                    <a class="nav-link active" href="http://localhost:5000/gm">主页</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myModal">Add Player</a>
+                    <button id="allRecordCountBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#allRecordCountModal">总记录数
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Delete Player</a>
+                    <button id="addPlayerRecordBtn" type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addPlayerRecordModal">添加玩家记录
+                    </button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Update Player</a>
+                    <div class="form-group">
+                        <label for="delMatchId">按比赛ID删除</label>
+                        <input type="text" class="form-control" id="delMatchId" placeholder="输入比赛ID">
+                        <button type="button" class="btn btn-danger mt-2" id="delKillRecordBtn">删除</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="form-group">
+                        <label for="searchMatchId">按比赛ID搜索</label>
+                        <input type="text" class="form-control" id="searchMatchId" placeholder="输入比赛ID">
+                        <button type="button" class="btn btn-primary mt-2" id="searchBtn">搜索</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="form-group">
+                        <label for="delPlayerId">按玩家ID删除</label>
+                        <input type="text" class="form-control" id="delPlayerId" placeholder="输入玩家ID">
+                        <button type="button" class="btn btn-danger mt-2" id="delPlayerRecordBtn">删除</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="form-group">
+                        <label for="searchPlayerId">按玩家ID搜索</label>
+                        <input type="text" class="form-control" id="searchPlayerId" placeholder="输入玩家ID">
+                        <button type="button" class="btn btn-primary mt-2" id="searchPlayerBtn">搜索</button>
+                    </div>
                 </li>
             </ul>
+
+            <!-- Add Match Modal -->
+            <div class="modal fade" id="addPlayerRecordModal" tabindex="-1" aria-labelledby="addPlayerRecordModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPlayerRecordModalLabel">添加击杀记录</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="PlayerRecordForm" action="/submit" method="POST">
+                                <div class="form-group">
+                                    <label for="player_id">玩家ID</label>
+                                    <select class="form-control" id="player_id" name="player_id" required>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="match_id">比赛ID</label>
+                                    <select class="form-control" id="match_id" name="match_id" required>>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kill_count">击杀数</label>
+                                    <input type="number" class="form-control" id="kill_count" name="kill_count" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kd">K/D 比率</label>
+                                    <input type="number" step="0.01" class="form-control" id="kd" name="kd" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="death_count">死亡数</label>
+                                    <input type="number" class="form-control" id="death_count" name="death_count" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rankpoints">排名积分</label>
+                                    <input type="number" class="form-control" id="rankpoints" name="rankpoints" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="PlayerRecordFormBtn">添加击杀记录
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Match Count Modal -->
+            <div class="modal fade" id="allRecordCountModal" tabindex="-1" aria-labelledby="allRecordCountModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allRecordCountModalLabel">总比赛数</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body justify-content-center" id="allRecordCountOutput">
+                            出问题了
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <!-- Main Content -->
         <div class="col-md-10 main-content">
-            <h2>玩家列表</h2>
+            <h2>比赛列表</h2>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>玩家昵称</th>
-                    <th>玩家段位</th>
-                    <th>玩家KDA</th>
+                    <th>击杀记录ID</th>
+                    <th>玩家ID</th>
+                    <th>比赛ID</th>
+                    <th>击杀数</th>
+                    <th>K/D 比率</th>
+                    <th>死亡数</th>
+                    <th>排名积分</th>
                     <th>选项</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Placeholder data rows -->
-                {% for player in data %}
+                {% for record in data %}
                     <tr>
-                        <td>{{ player.id }}</td>
-                        <td>{{ player.player_name }}</td>
-                        <td>{{ player.player_rank }}</td>
-                        <td>{{ player.player_kda }}</td>
+                        <td>{{ record.pmatchId }}</td>
+                        <td>{{ record.playerId }}</td>
+                        <td>{{ record.matchId }}</td>
+                        <td>{{ record.killCount }}</td>
+                        <td>{{ record.kd }}</td>
+                        <td>{{ record.deathCount }}</td>
+                        <td>{{ record.rankpoints }}</td>
                         <td>
-                            <button href='http://localhost:5000//players//{{ player.id }}'
-                                    class="btn btn-warning btn-sm">Edit
-                            </button>
-                            <button href='http://localhost:5000//players//{{ player.id }} '
-                                    class="btn btn-danger btn-sm">Delete
+                            <button class="btn btn-danger btn-sm disabled" id="deleteKillRecordBtn_{{ loop.index }}">
+                                删除
                             </button>
                         </td>
                     </tr>
                 {% endfor %}
-                <!-- Add more rows as needed -->
                 </tbody>
             </table>
         </div>
-        <!-- Modal -->
-        <div class="modal" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
 
-                    <!-- 模态框头部 -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">模态框标题</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- 模态框内容 -->
-                    <div class="modal-body">
-                        模态框内容..
-                    </div>
-
-                    <!-- 模态框底部 -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -105,5 +183,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="../static/js/playerRecord.js"></script>
 </body>
 </html>

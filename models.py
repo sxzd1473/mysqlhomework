@@ -109,8 +109,27 @@ class PlayerRecord(db.Model):
             db.session.add(precord)
         db.session.commit()
 
-
-
+class Account(db.Model):
+    __tablename__ = 'account'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    password = db.Column(db.String(20), unique=False, nullable=False)
+    name = db.Column(db.String(20), unique=False, nullable=True)
+    authority = db.Column(db.String(20), unique=False, nullable=True,check_constraint='check(authority in (\'admin\',\'user\'))')
+    @staticmethod
+    def init_db():
+        db.create_all()
+        rets = [
+            (1, '123456', 'admin', 'admin'),
+            (2, '123456', 'user1', 'user'),
+            ]
+        for ret in rets:
+            account = Account()
+            account.id = ret[0]
+            account.password = ret[1]
+            account.name = ret[2]
+            account.authority = ret[3]
+            db.session.add(account)
+        db.session.commit()
 
 
 

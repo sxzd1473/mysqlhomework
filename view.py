@@ -3,21 +3,20 @@ from flask import request
 from flask.views import MethodView
 
 from extension import db
-from models import Player, Match, MatchRecord, PlayerRecord
-
+from models import Player, Match, MatchRecord, PlayerRecord, Account
 
 
 class PlayerApi(MethodView):
     def get(self, player_id):
         if not player_id:
-            players:[Player] = Player.query.all()
+            players: [Player] = Player.query.all()
             results = [
                 {
                     'id': player.id,
                     'player_name': player.player_name,
                     'player_rank': player.player_rank,
                     'player_kda': player.player_kda,
-                }for player in players
+                } for player in players
             ]
             return {
                 'status': 'success',
@@ -47,8 +46,8 @@ class PlayerApi(MethodView):
         db.session.add(player)
         db.session.commit()
         return {
-        'status': 'success',
-        'message': '数据添加成功'
+            'status': 'success',
+            'message': '数据添加成功'
         }
 
     def put(self, player_id):
@@ -68,7 +67,7 @@ class PlayerApi(MethodView):
                 'status': 'fail',
                 'message': '请指定要删除的玩家ID'
             }
-        player:Player = Player.query.get(player_id)
+        player: Player = Player.query.get(player_id)
         db.session.delete(player)
         db.session.commit()
         return {
@@ -80,7 +79,7 @@ class PlayerApi(MethodView):
 class MatchApi(MethodView):
     def get(self, match_id):
         if not match_id:
-            matches:[Match] = Match.query.all()
+            matches: [Match] = Match.query.all()
             results = [
                 {
                     'id': match.id,
@@ -89,7 +88,7 @@ class MatchApi(MethodView):
                     'match_result': match.match_result,
                     'match_duration': match.match_duration,
                     'match_map': match.match_map
-                }for match in matches
+                } for match in matches
             ]
             return {
                 'status': 'success',
@@ -103,13 +102,14 @@ class MatchApi(MethodView):
             'result':
                 {
                     'id': match.id,
-                   'match_mode': match.match_mode,
-                   'match_time': match.match_time,
-                   'match_result': match.match_result,
-                   'match_duration': match.match_duration,
-                   'match_map': match.match_map
+                    'match_mode': match.match_mode,
+                    'match_time': match.match_time,
+                    'match_result': match.match_result,
+                    'match_duration': match.match_duration,
+                    'match_map': match.match_map
                 }
         }
+
     def post(self):
         form = request.json
         match = Match()
@@ -124,6 +124,7 @@ class MatchApi(MethodView):
             'status': 'success',
             'message': '数据添加成功'
         }
+
     def put(self, match_id):
         match: Match = Match.query.get(match_id)
         match.match_mode = request.json.get('match_mode')
@@ -136,6 +137,7 @@ class MatchApi(MethodView):
             'status': 'success',
             'message': '数据修改成功'
         }
+
     def delete(self, match_id):
         if not match_id:
             self.deleteExpire()
@@ -146,6 +148,7 @@ class MatchApi(MethodView):
             'status': 'success',
             'message': '数据删除成功'
         }
+
     def deleteExpire(self):
         from datetime import datetime, timedelta
         # 计算三个月前的日期
@@ -174,13 +177,13 @@ class MatchApi(MethodView):
         # 提交更改
         db.session.commit()
         return {
-        'status': 'success',
-        'message': '数据删除成功'
+            'status': 'success',
+            'message': '数据删除成功'
         }
 
 
 class MatchRecordApi(MethodView):
-    def get(self, match_id):
+    def get(self, match_id, player_id):
         if not match_id:
             match: [MatchRecord] = MatchRecord.query.all()
             results = [
@@ -209,8 +212,8 @@ class MatchRecordApi(MethodView):
                 'killTime': record.killTime,
                 'meansOfDeath': record.meansOfDeath,
                 'coordinates': record.coordinates
-                }for record in match
-            ]
+            } for record in match
+        ]
         return {
             'status': 'success',
             'message': '数据查询成功',
@@ -234,14 +237,14 @@ class MatchRecordApi(MethodView):
             'message': '数据添加成功'
         }
 
-    def delete(self,match_id):
+    def delete(self, match_id):
         if not match_id:
             return {
                 'status': 'fail',
                 'message': '请指定要删除的比赛ID'
             }
-        else: #删除比赛记录
-            records: [MatchRecord] = MatchRecord.query.filter_by(matchId = match_id).all()
+        else:  # 删除比赛记录
+            records: [MatchRecord] = MatchRecord.query.filter_by(matchId=match_id).all()
             for record in records:
                 db.session.delete(record)
             db.session.commit()
@@ -250,40 +253,78 @@ class MatchRecordApi(MethodView):
                 'message': '数据删除成功'
             }
 
+
 class PlayerRecordApi(MethodView):
-    def get(self, player_id):
+    def get(self):
+        player_id = request.args.get('player_id')
+        match_id = request.args.get('match_id')
+        if not player_id and not match_id:
+            players: [PlayerRecord] = PlayerRecord.query.all()
+            results = [
+                {
+                    'pmatchId': player.pmatchId,
+                    'playerId': player.playerId,
+                    'matchId': player.matchId,
+                    'killCount': player.killCount,
+                    'deathCount': player.deathCount,
+                    'kd': player.kd,
+                    'rankpoints': player.rankpoints,
+                } for player in players
+            ]
+            return {
+                'status': 'success',
+                'message': '数据查询成功',
+                'results': results
+            }
         if not player_id:
+            players: [PlayerRecord] = PlayerRecord.query.filter_by(matchId=match_id)
+            results = [
+                {
+                    'pmatchId': player.pmatchId,
+                    'playerId': player.playerId,
+                    'matchId': player.matchId,
+                    'killCount': player.killCount,
+                    'deathCount': player.deathCount,
+                    'kd': player.kd,
+                    'rankpoints': player.rankpoints,
+                } for player in players
+            ]
+            return {
+                'status': 'success',
+                'message': '数据查询成功',
+                'results': results
+            }
+        if not match_id:
+            players: [PlayerRecord] = PlayerRecord.query.filter_by(playerId=player_id)
+            results = [
+                {
+                    'pmatchId': player.pmatchId,
+                    'playerId': player.playerId,
+                    'matchId': player.matchId,
+                    'killCount': player.killCount,
+                    'deathCount': player.deathCount,
+                    'kd': player.kd,
+                    'rankpoints': player.rankpoints,
+                } for player in players
+            ]
+            return {
+                'status': 'success',
+                'message': '数据查询成功',
+                'results': results
+            }
+        if player_id and match_id:
             return {
                 'status': 'fail',
-                'message' : '请指定playerid'
+                'message': '请仅指定playerid或matchid中的一个'
             }
-        records = PlayerRecord.query.filter_by(matchId=player_id).all()
-        records_data = []
-        for record in records:
-            records_data.append(
-            {
-                'pmatchId': record.recordId,
-                'playerId': record.playerId,
-                'matchId': record.matchId,
-                'killCount': record.killCount,
-                'deathCount': record.deathCount,
-                'kd' : record.kd,
-                'rankpoints' : record.rankpoints,
-            }
-            )
-        return {
-            'status': 'success',
-            'message': '数据查询成功',
-            'results': records_data
-        }
+
     def post(self):
         form = request.json
         playerrecord = PlayerRecord()
-        playerrecord.pmatchId = form.get('pmatchId')
-        playerrecord.playerId = form.get('playerId')
-        playerrecord.matchId = form.get('matchId')
-        playerrecord.killCount = form.get('killCount')
-        playerrecord.deathCount = form.get('deathCount')
+        playerrecord.playerId = form.get('player_id')
+        playerrecord.matchId = form.get('match_id')
+        playerrecord.killCount = form.get('kill_count')
+        playerrecord.deathCount = form.get('death_count')
         playerrecord.kd = form.get('kd')
         playerrecord.rankpoints = form.get('rankpoints')
         db.session.add(playerrecord)
@@ -292,31 +333,87 @@ class PlayerRecordApi(MethodView):
             'status': 'success',
             'message': '数据添加成功'
         }
-    def delete(self, player_id):
-        if not player_id:
+
+    def delete(self):
+        player_id = request.args.get('player_id')
+        match_id = request.args.get('match_id')
+        print(player_id, match_id)
+        if not player_id and not match_id:
             return {
                 'status': 'fail',
-                'message' : '请指定playerid'
+                'message': '请指定要删除的玩家ID或比赛ID'
             }
-        else:
-            playerR: [PlayerRecord] = PlayerRecord.query.filter_by(player_id = player_id).all()
-            db.session.delete(playerR)
+        elif not player_id:
+            playerR: [PlayerRecord] = PlayerRecord.query.filter_by(matchId=match_id)
+            print(playerR)
+            for player in playerR:
+                db.session.delete(player)
             db.session.commit()
             return {
                 'status': 'success',
                 'message': '数据删除成功'
             }
+        elif not match_id:
+            playerR: [PlayerRecord] = PlayerRecord.query.filter_by(playerId=player_id)
+            print(playerR)
+            for player in playerR:
+                db.session.delete(player)
+            db.session.commit()
+            return {
+                'status': 'success',
+                'message': '数据删除成功'
+            }
+        else:
+            return {
+                'status': 'fail',
+                'message': '数据删除失败，请指定并仅指定playerid或matchid中的一个'
+            }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+class AccountApi(MethodView):
+    def post(self):
+        operation = request.args.get('operation')
+        if operation == 'register':
+            self.register()
+            return {
+                'status': 'success',
+                'message': '注册成功'
+            }
+        elif operation == 'login':
+            res = self.login()
+            if res == -1:
+                return {
+                    'status': 'fail',
+                    'message': '无法登录'
+                }
+            else:
+                return {
+                    'status': 'success',
+                    'message': '登录成功',
+                    'result': {
+                        'authority' : res
+                    }
+                }
+        else:
+            return {
+                'status': 'fail',
+                'message': '未定义的操作'
+            }
+    def register(self):
+        form = request.json
+        account = Account()
+        account.id = form.get('id')
+        account.name = form.get('name')
+        account.password = form.get('password')
+        account.authority = 'user'
+        db.session.add(account)
+    def login(self):
+        form = request.json
+        account = Account()
+        account.id = form.get('id')
+        account.password = form.get('password')
+        correct_pw = Account.query.filter_by(id=account.id, password=account.password).first()
+        if account.id and account.password == correct_pw.password:
+            return account.authority
+        else:
+            return -1

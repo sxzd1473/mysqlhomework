@@ -1,8 +1,8 @@
 from flask import Flask,render_template,jsonify,request,redirect,url_for
 import requests
 from extension import db, cors
-from models import Player, Match, MatchRecord, PlayerRecord
-from view import PlayerApi, MatchApi, MatchRecordApi, PlayerRecordApi
+from models import Player, Match, MatchRecord, PlayerRecord,Account
+from view import PlayerApi, MatchApi, MatchRecordApi, PlayerRecordApi,AccountApi
 
 #运行前调用cli命令create创建数据库！！！
 
@@ -13,8 +13,16 @@ db.init_app(app)
 cors.init_app(app)
 
 @app.route('/')
+def index():
+    return redirect(url_for('login'))
+
+@app.route('/gm')
 def hello_world():  # put application's code here
     return render_template("main_page.html")
+
+@app.route('/user')
+def user():
+    return render_template("user.html")
 #player
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
@@ -25,11 +33,11 @@ app.add_url_rule('/players/delete/<int:player_id>/', view_func=player_view, meth
 
 #playerRecord
 playerRecord_view = PlayerRecordApi.as_view('playerRecord_api')
-app.add_url_rule('/playerRecords/', defaults={'playerRecord_id': None},
+app.add_url_rule('/playerRecords/',
                  view_func=playerRecord_view, methods=['GET', ]
                  )
 app.add_url_rule('/playerRecords/add/', view_func=playerRecord_view, methods=['POST'])
-app.add_url_rule('/playerRecords/delete/<int:player_id>/', view_func=playerRecord_view, methods=['DELETE'])
+app.add_url_rule('/playerRecords/delete/', view_func=playerRecord_view, methods=['DELETE'])
 
 #match
 match_view = MatchApi.as_view('match_api')
@@ -52,7 +60,18 @@ app.add_url_rule('/matchRecords/<int:match_id>/', view_func=matchRecord_view, me
 app.add_url_rule('/matchRecords/add/', view_func=matchRecord_view, methods=['POST'])
 app.add_url_rule('/matchRecords/delete/<int:match_id>/', view_func=matchRecord_view, methods=['DELETE'])
 app.add_url_rule('/matchRecords/edit/<int:match_id>/', view_func=matchRecord_view, methods=['PUT'])
+#account
+account = AccountApi.as_view('account')
+app.add_url_rule('/account/', view_func=account, methods=['POST'])#传入operation
 #路由
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
 
 
 @app.route('/Players_view')
@@ -64,7 +83,6 @@ def players_view():
     if response.status_code == 200:
         # 解析响应数据为 Python 对象（假设返回的是 JSON 格式）
         data = response.json()['results']
-        print(data)
 
         # 将数据传递给模板
         return render_template('Player.html', data=data)
@@ -82,7 +100,6 @@ def matches_view():
     if response.status_code == 200:
         # 解析响应数据为 Python 对象（假设返回的是 JSON 格式）
         data = response.json()['results']
-        print(data)
 
         # 将数据传递给模板
         return render_template('Match.html', data=data)
@@ -100,7 +117,6 @@ def matchRecords_view():
     if response.status_code == 200:
         # 解析响应数据为 Python 对象（假设返回的是 JSON 格式）
         data = response.json()['results']
-        print(data)
 
         # 将数据传递给模板
         return render_template('MatchRecord.html', data=data)
@@ -118,7 +134,6 @@ def playerRecords_view():
     if response.status_code == 200:
         # 解析响应数据为 Python 对象（假设返回的是 JSON 格式）
         data = response.json()['results']
-        print(data)
 
         # 将数据传递给模板
         return render_template('PlayerRecord.html', data=data)
@@ -136,6 +151,7 @@ def create():
     Match.init_db()
     MatchRecord.init_db()
     PlayerRecord.init_db()
+    Account.init_db()
     print('Database created successfully')
 
 if __name__ == '__main__':
