@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="robots" content="all,follow">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.default.css" id="theme-stylesheet">
 </head>
 <body>
@@ -64,8 +64,8 @@
     </div>
 </div>
 <!-- JavaScript files-->
-<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="../static/js/jquery3.7.1.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/vendor/jquery-validation/jquery.validate.min.js"></script><!--表单验证-->
 <!-- Main File-->
 <script src="../static/js/front.js"></script>
@@ -78,7 +78,6 @@
             formData.forEach((value, key)=>{
                 data[key] = value;
             });
-            console.log(data);
             fetch('/account/?operation=login', {
                 method: 'POST',
                 headers: {
@@ -88,17 +87,22 @@
             }).then(response => response.json())
                 .then(
                     response => {
-                        console.log(response);
                         if (response['status'] == 'success') {
                             alert("登录成功!");
+                            console.log(response);
                             var lvl = response['result']['authority'];
+                            var userId = response['result']['id'];
                             console.log(lvl);
-                            if (lvl === 'admin') {
-                                location.replace("/gm");
-                            } else if (lvl === 'user') {
-                                location.replace(`/user/?userID=${response["result"]["userId"]}`);
-                            } else {
-                                alert("???");
+                            switch (lvl) {
+                                case 'admin':
+                                    location.replace("/gm");
+                                    break;
+                                case 'user':
+                                    location.replace(`/user/?userID=${userId}`);
+                                    break;
+                                default:
+                                    alert("登录失败，请联系管理员!");
+                                    break;
                             }
                         } else {
                             alert("登录失败，请检查用户名和密码!");

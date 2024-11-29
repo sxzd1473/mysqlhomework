@@ -45,6 +45,14 @@ class PlayerApi(MethodView):
         player.player_kda = form.get('player_kda')
         db.session.add(player)
         db.session.commit()
+
+        account = Account()
+        account.name = form.get('player_name')
+        account.password = "123456"
+        account.authority = "admin"
+        account.playerId = player.id
+        db.session.add(account)
+        db.session.commit()
         return {
             'status': 'success',
             'message': '数据添加成功'
@@ -396,9 +404,7 @@ class AccountApi(MethodView):
                 return {
                     'status': 'success',
                     'message': '登录成功',
-                    'result': {
-                        'authority' : res
-                    }
+                    'result' : res
                 }
         else:
             return {
@@ -411,6 +417,10 @@ class AccountApi(MethodView):
         account.name = form.get('userName')
         account.password = form.get('passWord')
         account.authority = 'user'
+        account.playerId = account.id
+        player = Player()
+        player.playerId = account.id
+        player.name = form.get('userName')
         db.session.add(account)
         db.session.commit()
         return 1
@@ -419,10 +429,13 @@ class AccountApi(MethodView):
         account = Account()
         account.name = form.get('userName')
         account.password = form.get('passWord')
-        print(account.name, account.password)
         correct_pw = Account.query.filter_by(name=account.name, password=account.password).first()
         if correct_pw is not None and account.password == correct_pw.password:
             account.authority = Account.query.filter_by(name=account.name).first().authority
-            return account.authority
+            account.id = Account.query.filter_by(name=account.name).first().id
+            return {
+                'authority': account.authority,
+                'id' : account.id,
+            }
         else:
             return '-1'

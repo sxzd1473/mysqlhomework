@@ -20,11 +20,18 @@ def index():
 def hello_world():  # put application's code here
     return render_template("main_page.html")
 
-@app.route('/user')
+@app.route('/user/')
 def user():
-    id = request.args.get('id')
-    player = Player.query.filter_by(id=id).first()
-    return render_template("user.html",player=player)
+    __id = request.args.get('userID')
+    player = Player.query.filter_by(id=__id).first()
+    response = requests.get('http://localhost:5000/playerRecords/?player_id='+str(__id))
+    if response.status_code == 200:
+        _playerrecord = response.json()['results']
+        return render_template("user.html", player=player, record=_playerrecord)
+    else:
+        return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
+
+
 #player
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
@@ -91,7 +98,6 @@ def players_view():
     else:
         # 处理错误情况
         return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
-    return render_template('Player.html',data = data)
 
 @app.route('/Matches_view')
 def matches_view():

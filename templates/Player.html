@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Database Management</title>
     <!-- Bootstrap CSS CDN -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .sidebar {
             height: 100vh;
@@ -39,7 +39,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPlayerModalLabel">Add Player</h5>
+                            <h5 class="modal-title" id="addPlayerModalLabel">添加管理员玩家</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -47,12 +47,12 @@
                         <div class="modal-body">
                             <form id="playerForm" action="/sumbit" method="POST">
                                 <div class="form-group">
-                                    <label for="player_name">Player Name</label>
+                                    <label for="player_name">玩家名字</label>
                                     <input type="text" class="form-control" id="player_name" name="player_name"
                                            required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="player_rank">Player Rank</label>
+                                    <label for="player_rank">玩家段位</label>
                                     <select class="form-control" id="player_rank" name="player_rank" required>
                                         <option value="青铜">青铜</option>
                                         <option value="白银">白银</option>
@@ -63,15 +63,15 @@
                                         </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="player_kda">Player KDA</label>
+                                    <label for="player_kda">玩家战绩</label>
                                     <input type="number" class="form-control" id="player_kda" name="player_kda"
                                            required>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="submitPlayerForm">Add Player</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitPlayerForm">添加</button>
                         </div>
                     </div>
                 </div>
