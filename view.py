@@ -374,14 +374,20 @@ class AccountApi(MethodView):
     def post(self):
         operation = request.args.get('operation')
         if operation == 'register':
-            self.register()
-            return {
-                'status': 'success',
-                'message': '注册成功'
-            }
+            res = self.register()
+            if res == '-1':
+                return {
+                    'status': 'fail',
+                    'message': '注册失败'
+                }
+            else:
+                return {
+                    'status': 'success',
+                    'message': '注册成功'
+                }
         elif operation == 'login':
             res = self.login()
-            if res == -1:
+            if res == '-1':
                 return {
                     'status': 'fail',
                     'message': '无法登录'
@@ -402,18 +408,21 @@ class AccountApi(MethodView):
     def register(self):
         form = request.json
         account = Account()
-        account.id = form.get('id')
-        account.name = form.get('name')
-        account.password = form.get('password')
+        account.name = form.get('userName')
+        account.password = form.get('passWord')
         account.authority = 'user'
         db.session.add(account)
+        db.session.commit()
+        return 1
     def login(self):
         form = request.json
         account = Account()
-        account.id = form.get('id')
-        account.password = form.get('password')
-        correct_pw = Account.query.filter_by(id=account.id, password=account.password).first()
-        if account.id and account.password == correct_pw.password:
+        account.name = form.get('userName')
+        account.password = form.get('passWord')
+        print(account.name, account.password)
+        correct_pw = Account.query.filter_by(name=account.name, password=account.password).first()
+        if correct_pw is not None and account.password == correct_pw.password:
+            account.authority = Account.query.filter_by(name=account.name).first().authority
             return account.authority
         else:
-            return -1
+            return '-1'

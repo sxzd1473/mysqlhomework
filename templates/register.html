@@ -66,8 +66,8 @@
     </div>
 </div>
 <!-- JavaScript files-->
-<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
-<script src="https://www.jq22.com/jquery/bootstrap-4.2.1.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(function () {
         /*错误class  form-control is-invalid
@@ -121,20 +121,20 @@
             if (flagName && flagPas && flagPass) {
                 localStorage.setItem("name", name);
                 localStorage.setItem("passWord", passWord);
-                $.ajax({
-                    type: "POST",
-                    url: "/account/$operation=register",
-                    data: {"userName": userName, "passWord": passWord},
-                    success: function (response) {
-                        // 处理注册成功的逻辑
-                        alert("注册成功!");
-                        // 注册成功后，可以跳转到登录页或直接登录
-                    },
-                    error: function () {
-                        // 处理注册失败的逻辑
-                        alert("注册失败，请重试!");
-                    }
-                });
+                var data = {"userName": name, "passWord": passWord};
+                fetch("/account/?operation=register",{
+                    method: "POST",
+                    headers: {"Content-Type": "application/json;charset=UTF-8"},
+                    body: JSON.stringify(data)
+                })
+                    .then(function (response) {
+                            if (response.ok) {
+                                alert("注册成功");
+                            } else {
+                                alert("注册失败");
+                            }
+                        }
+                    );
                 location = "/login"
             } else {
                 if (!flagName) {

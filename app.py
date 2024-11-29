@@ -22,7 +22,9 @@ def hello_world():  # put application's code here
 
 @app.route('/user')
 def user():
-    return render_template("user.html")
+    id = request.args.get('id')
+    player = Player.query.filter_by(id=id).first()
+    return render_template("user.html",player=player)
 #player
 player_view = PlayerApi.as_view('player_api')
 app.add_url_rule('/players/', defaults={'player_id': None},
@@ -65,7 +67,7 @@ account = AccountApi.as_view('account')
 app.add_url_rule('/account/', view_func=account, methods=['POST'])#传入operation
 #路由
 
-@app.route('/login')
+@app.route('/login',methods=['GET',])
 def login():
     return render_template('login.html')
 

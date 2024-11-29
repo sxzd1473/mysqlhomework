@@ -113,7 +113,7 @@ class Account(db.Model):
     __tablename__ = 'account'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     password = db.Column(db.String(20), unique=False, nullable=False)
-    name = db.Column(db.String(20), unique=False, nullable=True)
+    name = db.Column(db.String(20), unique=True, nullable=True)
     authority = db.Column(db.String(20), unique=False, nullable=True,check_constraint='check(authority in (\'admin\',\'user\'))')
     @staticmethod
     def init_db():
